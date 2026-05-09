@@ -34,8 +34,8 @@ struct SettingsView: View {
 
             Section("Appearance") {
                 Picker("Theme", selection: Binding(
-                    get: { selectedTheme },
-                    set: { selectedTheme = $0 }
+                    get: { AppTheme(rawValue: selectedThemeRaw) ?? .moleskine },
+                    set: { selectedThemeRaw = $0.rawValue }
                 )) {
                     ForEach(AppTheme.allCases, id: \.self) { theme in
                         Text(theme.settingsDisplayName)
@@ -44,8 +44,8 @@ struct SettingsView: View {
                 }
 
                 Picker("Mode", selection: Binding(
-                    get: { appearanceMode },
-                    set: { appearanceMode = $0 }
+                    get: { AppearanceMode(rawValue: appearanceModeRaw) ?? .system },
+                    set: { appearanceModeRaw = $0.rawValue }
                 )) {
                     ForEach(AppearanceMode.allCases, id: \.self) { mode in
                         Text(mode.displayName).tag(mode)

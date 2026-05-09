@@ -15,18 +15,19 @@ final class FolderMonitor {
     func start() {
         guard source == nil else { return }
 
-        descriptor = open(url.path, O_EVTONLY)
-        guard descriptor >= 0 else { return }
+        let openedDescriptor = open(url.path, O_EVTONLY)
+        guard openedDescriptor >= 0 else { return }
+        descriptor = openedDescriptor
 
         let source = DispatchSource.makeFileSystemObjectSource(
-            fileDescriptor: descriptor,
+            fileDescriptor: openedDescriptor,
             eventMask: [.write, .delete, .rename, .attrib],
             queue: DispatchQueue.global(qos: .utility)
         )
 
         source.setEventHandler(handler: callback)
-        source.setCancelHandler { [descriptor] in
-            close(descriptor)
+        source.setCancelHandler { [openedDescriptor] in
+            close(openedDescriptor)
         }
 
         self.source = source
@@ -36,6 +37,7 @@ final class FolderMonitor {
     func stop() {
         source?.cancel()
         source = nil
+        descriptor = -1
     }
 }
 #endif

@@ -11,6 +11,7 @@ final class NotebookLibraryViewModel: ObservableObject {
 
     private var folderMonitor: FolderMonitor?
     private var timer: Timer?
+    private let fallbackRescanInterval: TimeInterval = 30
 
     init() {
         let rootFolderPath = UserDefaults.standard.string(forKey: rootFolderDefaultsKey) ?? ""
@@ -74,7 +75,7 @@ final class NotebookLibraryViewModel: ObservableObject {
         }
         folderMonitor?.start()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: fallbackRescanInterval, repeats: true) { [weak self] _ in
             self?.reloadTree()
         }
     }
@@ -199,15 +200,19 @@ struct NotebookTheme {
     let paper: Color
 
     init(theme: AppTheme) {
+        let moleskineBackground = Color(red: 0.20, green: 0.14, blue: 0.09)
+        let moleskineSidebar = Color(red: 0.27, green: 0.19, blue: 0.11)
+        let moleskinePaper = Color(red: 0.94, green: 0.90, blue: 0.82)
+
         switch theme {
         case .moleskine:
-            background = Color(red: 0.20, green: 0.14, blue: 0.09)
-            sidebar = Color(red: 0.27, green: 0.19, blue: 0.11)
-            paper = Color(red: 0.94, green: 0.90, blue: 0.82)
+            background = moleskineBackground
+            sidebar = moleskineSidebar
+            paper = moleskinePaper
         case .linen, .graphite:
-            background = Color(red: 0.20, green: 0.14, blue: 0.09)
-            sidebar = Color(red: 0.27, green: 0.19, blue: 0.11)
-            paper = Color(red: 0.94, green: 0.90, blue: 0.82)
+            background = moleskineBackground
+            sidebar = moleskineSidebar
+            paper = moleskinePaper
         }
     }
 }

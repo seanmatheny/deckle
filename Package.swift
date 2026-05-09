@@ -3,6 +3,9 @@ import PackageDescription
 
 let package = Package(
     name: "deckle",
+    platforms: [
+        .macOS(.v14)
+    ],
     products: [
         .library(name: "DeckleCore", targets: ["DeckleCore"]),
         .executable(name: "Deckle", targets: ["DeckleApp"])

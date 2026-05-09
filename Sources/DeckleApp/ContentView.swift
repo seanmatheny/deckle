@@ -3,6 +3,10 @@ import DeckleCore
 import PDFKit
 import SwiftUI
 
+private enum RefreshPolicy {
+    static let fallbackRescanInterval: TimeInterval = 30
+}
+
 final class NotebookLibraryViewModel: ObservableObject {
     @Published var tree: [NotebookNode] = []
     @Published var selectedPDF: URL?
@@ -11,7 +15,6 @@ final class NotebookLibraryViewModel: ObservableObject {
 
     private var folderMonitor: FolderMonitor?
     private var timer: Timer?
-    private let fallbackRescanInterval: TimeInterval = 30
 
     init() {
         let rootFolderPath = UserDefaults.standard.string(forKey: rootFolderDefaultsKey) ?? ""
@@ -75,7 +78,7 @@ final class NotebookLibraryViewModel: ObservableObject {
         }
         folderMonitor?.start()
 
-        timer = Timer.scheduledTimer(withTimeInterval: fallbackRescanInterval, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: RefreshPolicy.fallbackRescanInterval, repeats: true) { [weak self] _ in
             self?.reloadTree()
         }
     }

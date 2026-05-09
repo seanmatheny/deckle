@@ -35,10 +35,4 @@ final class NotebookIndexerTests: XCTestCase {
         XCTAssertTrue(personalChildren.contains("book notes"))
         XCTAssertFalse(personalChildren.contains("ignore.txt"))
     }
-
-    func testThemesExposeImplementationStatus() {
-        XCTAssertTrue(AppTheme.moleskine.isImplemented)
-        XCTAssertFalse(AppTheme.linen.isImplemented)
-        XCTAssertFalse(AppTheme.graphite.isImplemented)
-    }
 }

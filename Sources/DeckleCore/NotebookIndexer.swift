@@ -5,6 +5,8 @@ public enum NotebookIndexError: Error {
 }
 
 public enum NotebookIndexer {
+    /// Builds a tree that includes PDF files and only directories that contain PDFs directly
+    /// or in their descendant folders.
     public static func buildTree(from root: URL, fileManager: FileManager = .default) throws -> [NotebookNode] {
         var isDirectory: ObjCBool = false
         guard fileManager.fileExists(atPath: root.path, isDirectory: &isDirectory), isDirectory.boolValue else {

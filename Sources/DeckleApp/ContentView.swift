@@ -4,7 +4,7 @@ import PDFKit
 import SwiftUI
 
 private enum RefreshPolicy {
-    static let fallbackRescanInterval: TimeInterval = 30
+    static let fallbackRescanIntervalSeconds: TimeInterval = 30
 }
 
 final class NotebookLibraryViewModel: ObservableObject {
@@ -78,7 +78,7 @@ final class NotebookLibraryViewModel: ObservableObject {
         }
         folderMonitor?.start()
 
-        timer = Timer.scheduledTimer(withTimeInterval: RefreshPolicy.fallbackRescanInterval, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: RefreshPolicy.fallbackRescanIntervalSeconds, repeats: true) { [weak self] _ in
             self?.reloadTree()
         }
     }
@@ -198,24 +198,24 @@ struct PDFDocumentView: NSViewRepresentable {
 }
 
 struct NotebookTheme {
+    private static let moleskineBackground = Color(red: 0.20, green: 0.14, blue: 0.09)
+    private static let moleskineSidebar = Color(red: 0.27, green: 0.19, blue: 0.11)
+    private static let moleskinePaper = Color(red: 0.94, green: 0.90, blue: 0.82)
+
     let background: Color
     let sidebar: Color
     let paper: Color
 
     init(theme: AppTheme) {
-        let moleskineBackground = Color(red: 0.20, green: 0.14, blue: 0.09)
-        let moleskineSidebar = Color(red: 0.27, green: 0.19, blue: 0.11)
-        let moleskinePaper = Color(red: 0.94, green: 0.90, blue: 0.82)
-
         switch theme {
         case .moleskine:
-            background = moleskineBackground
-            sidebar = moleskineSidebar
-            paper = moleskinePaper
+            background = Self.moleskineBackground
+            sidebar = Self.moleskineSidebar
+            paper = Self.moleskinePaper
         case .linen, .graphite:
-            background = moleskineBackground
-            sidebar = moleskineSidebar
-            paper = moleskinePaper
+            background = Self.moleskineBackground
+            sidebar = Self.moleskineSidebar
+            paper = Self.moleskinePaper
         }
     }
 }

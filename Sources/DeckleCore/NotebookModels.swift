@@ -34,6 +34,10 @@ public enum AppTheme: String, CaseIterable, Codable {
     public var isImplemented: Bool {
         self == .moleskine
     }
+
+    public var settingsDisplayName: String {
+        isImplemented ? displayName : "\(displayName) (Coming Soon)"
+    }
 }
 
 public enum AppearanceMode: String, CaseIterable, Codable {

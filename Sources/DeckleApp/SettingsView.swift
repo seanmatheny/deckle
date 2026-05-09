@@ -38,7 +38,7 @@ struct SettingsView: View {
                     set: { selectedTheme = $0 }
                 )) {
                     ForEach(AppTheme.allCases, id: \.self) { theme in
-                        Text(theme.isImplemented ? theme.displayName : "\(theme.displayName) (Coming Soon)")
+                        Text(theme.settingsDisplayName)
                             .tag(theme)
                     }
                 }

@@ -2,9 +2,13 @@ import DeckleCore
 import XCTest
 
 final class AppThemeTests: XCTestCase {
-    func testThemesExposeImplementationStatus() {
-        XCTAssertTrue(AppTheme.moleskine.isImplemented)
-        XCTAssertFalse(AppTheme.linen.isImplemented)
-        XCTAssertFalse(AppTheme.graphite.isImplemented)
+    func testAllThemesHaveNonEmptyDisplayNames() {
+        for theme in AppTheme.allCases {
+            XCTAssertFalse(theme.displayName.isEmpty, "\(theme.rawValue) should have a display name")
+        }
+    }
+
+    func testCustomThemeIsIncluded() {
+        XCTAssertTrue(AppTheme.allCases.contains(.custom))
     }
 }

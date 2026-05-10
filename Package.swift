@@ -12,7 +12,8 @@ let package = Package(
     ],
     targets: [
         .target(name: "DeckleCore"),
-        .executableTarget(name: "DeckleApp", dependencies: ["DeckleCore"]),
+        .executableTarget(name: "DeckleApp", dependencies: ["DeckleCore"],
+                          exclude: ["Info.plist"]),
         .testTarget(name: "DeckleCoreTests", dependencies: ["DeckleCore"])
     ]
 )

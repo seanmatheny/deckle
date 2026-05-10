@@ -89,12 +89,26 @@ struct ContentView: View {
     @AppStorage("deckle.theme") private var selectedThemeRaw = AppTheme.moleskine.rawValue
     @AppStorage("deckle.rootFolderPath") private var rootFolderPath = ""
 
+    // Custom theme colours — kept in sync with SettingsView via shared AppStorage keys.
+    @AppStorage(CustomThemeKey.background) private var customBackgroundHex = CustomThemeKey.defaultBackground
+    @AppStorage(CustomThemeKey.sidebar)    private var customSidebarHex    = CustomThemeKey.defaultSidebar
+    @AppStorage(CustomThemeKey.paper)      private var customPaperHex      = CustomThemeKey.defaultPaper
+    @AppStorage(CustomThemeKey.text)       private var customTextHex       = CustomThemeKey.defaultText
+
+    @Environment(\.openSettings) private var openSettings
+
     private var selectedTheme: AppTheme {
         AppTheme(rawValue: selectedThemeRaw) ?? .moleskine
     }
 
     private var resolvedTheme: NotebookTheme {
-        NotebookTheme(theme: selectedTheme)
+        if let preset = selectedTheme.presetTheme { return preset }
+        return NotebookTheme(
+            background: Color(hex: customBackgroundHex),
+            sidebar:    Color(hex: customSidebarHex),
+            paper:      Color(hex: customPaperHex),
+            text:       Color(hex: customTextHex)
+        )
     }
 
     var body: some View {
@@ -105,6 +119,14 @@ struct ContentView: View {
         }
         .background(resolvedTheme.background)
         .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    openSettings()
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .help("Open Preferences")
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button("Choose Library") {
                     viewModel.chooseRootFolder()
@@ -135,6 +157,7 @@ struct ContentView: View {
         }
         .scrollContentBackground(.hidden)
         .background(resolvedTheme.sidebar)
+        .foregroundStyle(resolvedTheme.text)
         .navigationTitle("Deckle")
     }
 
@@ -147,8 +170,9 @@ struct ContentView: View {
             VStack(spacing: 12) {
                 Text("Open a notebook")
                     .font(.title2.weight(.medium))
+                    .foregroundStyle(resolvedTheme.text.opacity(0.6))
                 Text("Choose a PDF in the sidebar to view it.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(resolvedTheme.text.opacity(0.4))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(resolvedTheme.paper)
@@ -193,29 +217,6 @@ struct PDFDocumentView: NSViewRepresentable {
     func updateNSView(_ nsView: PDFView, context: Context) {
         if nsView.document?.documentURL != url {
             nsView.document = PDFDocument(url: url)
-        }
-    }
-}
-
-struct NotebookTheme {
-    private static let moleskineBackground = Color(red: 0.20, green: 0.14, blue: 0.09)
-    private static let moleskineSidebar = Color(red: 0.27, green: 0.19, blue: 0.11)
-    private static let moleskinePaper = Color(red: 0.94, green: 0.90, blue: 0.82)
-
-    let background: Color
-    let sidebar: Color
-    let paper: Color
-
-    init(theme: AppTheme) {
-        switch theme {
-        case .moleskine:
-            background = Self.moleskineBackground
-            sidebar = Self.moleskineSidebar
-            paper = Self.moleskinePaper
-        case .linen, .graphite:
-            background = Self.moleskineBackground
-            sidebar = Self.moleskineSidebar
-            paper = Self.moleskinePaper
         }
     }
 }

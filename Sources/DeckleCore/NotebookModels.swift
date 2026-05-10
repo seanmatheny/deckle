@@ -19,6 +19,7 @@ public enum AppTheme: String, CaseIterable, Codable {
     case moleskine
     case linen
     case graphite
+    case custom
 
     public var displayName: String {
         switch self {
@@ -28,15 +29,9 @@ public enum AppTheme: String, CaseIterable, Codable {
             return "Classic Linen"
         case .graphite:
             return "Graphite"
+        case .custom:
+            return "Custom"
         }
-    }
-
-    public var isImplemented: Bool {
-        self == .moleskine
-    }
-
-    public var settingsDisplayName: String {
-        isImplemented ? displayName : "\(displayName) (Coming Soon)"
     }
 }
 

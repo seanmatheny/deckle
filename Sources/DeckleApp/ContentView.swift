@@ -90,7 +90,6 @@ struct ContentView: View {
     @AppStorage("deckle.rootFolderPath") private var rootFolderPath = ""
 
     // Custom theme colours — kept in sync with SettingsView via shared AppStorage keys.
-    @AppStorage(CustomThemeKey.background) private var customBackgroundHex = CustomThemeKey.defaultBackground
     @AppStorage(CustomThemeKey.sidebar)    private var customSidebarHex    = CustomThemeKey.defaultSidebar
     @AppStorage(CustomThemeKey.paper)      private var customPaperHex      = CustomThemeKey.defaultPaper
     @AppStorage(CustomThemeKey.text)       private var customTextHex       = CustomThemeKey.defaultText
@@ -104,7 +103,7 @@ struct ContentView: View {
     private var resolvedTheme: NotebookTheme {
         if let preset = selectedTheme.presetTheme { return preset }
         return NotebookTheme(
-            background: Color(hex: customBackgroundHex),
+            background: Color(hex: customSidebarHex), // background = sidebar colour; not a separate surface
             sidebar:    Color(hex: customSidebarHex),
             paper:      Color(hex: customPaperHex),
             text:       Color(hex: customTextHex)
@@ -117,7 +116,7 @@ struct ContentView: View {
         } detail: {
             detailView
         }
-        .background(resolvedTheme.background)
+        .toolbarBackground(resolvedTheme.sidebar, for: .windowToolbar)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -126,11 +125,6 @@ struct ContentView: View {
                     Image(systemName: "gear")
                 }
                 .help("Open Preferences")
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button("Choose Library") {
-                    viewModel.chooseRootFolder()
-                }
             }
         }
         .onChange(of: rootFolderPath) { _, newValue in
@@ -151,7 +145,7 @@ struct ContentView: View {
                     }
                 }
             } else {
-                Text("Select a folder in Settings or use the toolbar button.")
+                Text("Select a folder in Settings (gear icon).")
                     .foregroundStyle(.secondary)
             }
         }

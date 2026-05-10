@@ -7,7 +7,6 @@ struct SettingsView: View {
     @AppStorage("deckle.appearanceMode") private var appearanceModeRaw = AppearanceMode.system.rawValue
     @AppStorage("deckle.rootFolderPath") private var rootFolderPath = ""
 
-    @AppStorage(CustomThemeKey.background) private var customBackgroundHex = CustomThemeKey.defaultBackground
     @AppStorage(CustomThemeKey.sidebar)    private var customSidebarHex    = CustomThemeKey.defaultSidebar
     @AppStorage(CustomThemeKey.paper)      private var customPaperHex      = CustomThemeKey.defaultPaper
     @AppStorage(CustomThemeKey.text)       private var customTextHex       = CustomThemeKey.defaultText
@@ -20,7 +19,7 @@ struct SettingsView: View {
     private var resolvedPreview: NotebookTheme {
         if let preset = selectedTheme.presetTheme { return preset }
         return NotebookTheme(
-            background: Color(hex: customBackgroundHex),
+            background: Color(hex: customSidebarHex),
             sidebar:    Color(hex: customSidebarHex),
             paper:      Color(hex: customPaperHex),
             text:       Color(hex: customTextHex)
@@ -38,7 +37,7 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .padding(20)
         .frame(width: 540)
-        .frame(minHeight: selectedTheme == .custom ? 480 : 280)
+        .frame(minHeight: selectedTheme == .custom ? 440 : 280)
         .animation(.easeInOut(duration: 0.2), value: selectedTheme)
     }
 
@@ -92,7 +91,7 @@ struct SettingsView: View {
                             ThemeSwatchView(theme: preset)
                         } else {
                             ThemeSwatchView(theme: NotebookTheme(
-                                background: Color(hex: customBackgroundHex),
+                                background: Color(hex: customSidebarHex),
                                 sidebar:    Color(hex: customSidebarHex),
                                 paper:      Color(hex: customPaperHex),
                                 text:       Color(hex: customTextHex)
@@ -110,18 +109,16 @@ struct SettingsView: View {
 
     private var customColourSection: some View {
         Section("Custom Colours") {
-            ColorPickerRow(label: "Background",    hex: $customBackgroundHex)
-            ColorPickerRow(label: "Sidebar",       hex: $customSidebarHex)
-            ColorPickerRow(label: "Paper / Viewer", hex: $customPaperHex)
-            ColorPickerRow(label: "Text",          hex: $customTextHex)
+            ColorPickerRow(label: "Sidebar / Title Bar", hex: $customSidebarHex)
+            ColorPickerRow(label: "Paper / Viewer",     hex: $customPaperHex)
+            ColorPickerRow(label: "Text",               hex: $customTextHex)
 
             HStack {
                 Spacer()
                 Button("Reset to Moleskine") {
-                    customBackgroundHex = CustomThemeKey.defaultBackground
-                    customSidebarHex    = CustomThemeKey.defaultSidebar
-                    customPaperHex      = CustomThemeKey.defaultPaper
-                    customTextHex       = CustomThemeKey.defaultText
+                    customSidebarHex = CustomThemeKey.defaultSidebar
+                    customPaperHex   = CustomThemeKey.defaultPaper
+                    customTextHex    = CustomThemeKey.defaultText
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
@@ -144,4 +141,3 @@ struct SettingsView: View {
     }
 }
 #endif
-
